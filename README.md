@@ -93,11 +93,11 @@
         * 点击 **Encrypt** 保存。
 
         * **Variable name**: `SUPABASE_URL`
-        * **Value**: 粘贴您在第一步中复制的 Supabase **项目 URL**。
+        * **Value**: 粘贴您在第一步中复制的 Supabase **项目 URL**。 我的是https://nqjyvaxbhkjguynbrgya.supabase.co
         * 点击 **Encrypt** 保存。
 
         * **Variable name**: `SUPABASE_ANON_KEY`
-        * **Value**: 粘贴您在第一步中复制的 Supabase **anon 公钥**。
+        * **Value**: 粘贴您在第一步中复制的 Supabase **anon 公钥**。 我的是eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5xanl2YXhiaGtqZ3V5bmJyZ3lhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkxNDMxNzcsImV4cCI6MjA3NDcxOTE3N30.tE4pPw2w2iMes2oYwj7fFqehXd1zG8GAZlUIQpYF45s
         * 点击 **Encrypt** 保存。
 
 7.  **部署最终版本**:
