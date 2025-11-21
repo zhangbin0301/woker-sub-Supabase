@@ -15,8 +15,8 @@
     * 访问您的 [Supabase 仪表板](https://supabase.com/dashboard) 并创建一个新项目。
     * 在项目的 **Settings** > **API** 中，找到并复制您的 **项目 URL** (`Project URL`) 和 **anon 公钥** (`anon key`)。稍后会用到。
     * 举例：
-    * Project URL:https://nqjyvaxbhkjguynbrgya.supabase.co  
-    * anonpublic:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5xanl2YXhiaGtqZ3V5bmJyZ3lhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkxNDMxNzcsImV4cCI6MjA3NDcxOTE3N30.tE4pPw2w2iMes2oYwj7fFqehXd1zG8GAZlUIQpYF45s
+    * Project URL:https://nqjyvaxbhkjguy*****.supabase.co  
+    * anonpublic:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5xanl2YXhiaGtqZ3V5bmJyZ3lhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkxNDMxNzcsImV4cCI6MjA3NDcxOTE3N30.tE4pPw2w2iMes2oYwj7fFqehXd1zG8GAZlU*****
 
 2.  **创建数据库表**:
     * 在您的 Supabase 项目中，进入 **SQL Editor** 页面。
