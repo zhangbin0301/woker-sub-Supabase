@@ -1,13 +1,13 @@
 // worker设置里面添加变量PSWD(登录密码)
 // 基础参数配置
 const CONFIG = {
-    UUID: '1',  // 管理页面访问路径 /sub-uuid
-    APITOKEN: '1',  // 管理节点的API路径密钥
-    UP: '1',           // 节点上传密钥
-    TOKEN: '1', // 订阅地址密钥
-    USER: '1',  // 登录用户名
+    UUID: 'ea4909ef-7ca6-4b46-bf2e-6c07896ef338',  // 管理页面访问路径 /sub-uuid
+    APITOKEN: 'lgbt',  // 管理节点的API路径密钥
+    UP: 'ea4909ef-7ca6-4b46-bf2e-6c07896ef338',           // 节点上传密钥
+    TOKEN: 'lgbt', // 订阅地址密钥
+    USER: 'zhangbin0301',  // 登录用户名
     DEFAULT_DOMAIN: '', // 默认即可，无需设置
-    EXPIRATION_TIME: 1800, // 自动上传节点链接有效期(秒), 过期未更新则移除
+    EXPIRATION_TIME: 86400000, // 自动上传节点链接有效期(秒), 过期未更新则移除
     MAX_LOGIN_ATTEMPTS: 3, // 最大登录尝试次数 (前端限制)
     BACKGROUND_IMAGE: 'https://media.istockphoto.com/id/508515231/photo/feeling-free-to-express-her-sensuality.jpg?s=1024x1024&w=is&k=20&c=959xvWit4gR8btZtd7FmzTIkqzSwyB8zLIacQyQfLIk=;https://media.istockphoto.com/id/520980967/photo/sexy-beautiful-woman-in-lingerie.jpg?s=612x612&w=is&k=20&c=ciVJawZ8X8wrnyhK3GWaypMzus09kwuT7vildArZ20Q=;https://media.istockphoto.com/id/506435758/photo/beautyful-young-blond-woman-sitting-next-to-the-balkony-door.jpg?s=1024x1024&w=is&k=20&c=BeDnqv_dt3XPN00IVVuO0eJo6kA362nXBlDxBsUX-_8=;https://media.istockphoto.com/id/187150159/photo/naked-girl-in-water-on-a-black-background.jpg?s=1024x1024&w=is&k=20&c=IyxsYlzFJlJVYDDIkkZX3lw6nWYfcvVYVOpPnoM1sBk=;https://media.istockphoto.com/id/538127701/photo/female-torso-with-bra-on-black-background.jpg?s=612x612&w=is&k=20&c=Z1Na-xQxSiXEpf2RvC9MfeVWKssTXx36653LYzbh2oo=;https://cdn.pixabay.com/photo/2024/07/03/15/40/beauty-8870258_1280.png?q=80&w=1280;https://media.istockphoto.com/id/1077567800/photo/hot-young-adult-proud-and-domineering-woman-dressed-in-a-long-scarlet-red-long-dress-sexually.jpg?s=612x612&w=is&k=20&c=Ow7PyaUo2YZ1YDnnlPY3PJlmB9C_x5O9XYjR4Q_xd3U=;https://media.istockphoto.com/id/1077591134/photo/free-your-femininity.jpg?s=612x612&w=is&k=20&c=FqZHQjWLmL7yAslJLYIMPjF7LlXAIZAM9AR6bGHgE1g=;https://media.istockphoto.com/id/1156676927/photo/fashionable-studio-portrait-of-a-sport-girl.jpg?s=612x612&w=is&k=20&c=d4XhyoPnemNVTQBzK5gTb6t8n1un5m9vrZsgbihmS1U=;https://media.istockphoto.com/id/536720005/photo/looking-sensual-in-red.jpg?s=612x612&w=is&k=20&c=eCg7_4FCLHztU8fVuYIpwzezzbyRpw5FHZTS7GF9OHU='
 };
