@@ -796,6 +796,11 @@ socks-port: 7891
 allow-lan: true
 mode: rule
 log-level: info
+bind-address: "*"
+external-controller: 127.0.0.1:9090
+unified-delay: true
+tcp-concurrent: true
+global-client-fingerprint: chrome_psk_shuffle
 
 # 标准 Clash 优化的 DNS 配置
 dns:
@@ -803,6 +808,7 @@ dns:
   ipv6: false
   enhanced-mode: fake-ip
   fake-ip-range: 198.18.0.1/16
+  respect-rules: true
   
   # bootstrap DNS（IP 形式）
   default-nameserver:
@@ -811,7 +817,7 @@ dns:
   
   # 国内 DoH，含 ECS 加速
   nameserver:
-    - https://223.5.5.5/dns-query#ecs=1 # 国内DNS，走 DIRECT
+    - https://223.5.5.5/dns-query#ecs=1
     - https://1.12.12.12/dns-query#ecs=1
   
   # 国外 DoH，用于解锁/防污染
@@ -819,7 +825,11 @@ dns:
     - https://1.1.1.1/dns-query
     - https://8.8.8.8/dns-query
     - https://9.9.9.9/dns-query
-  
+       
+  direct-nameserver: 
+    - 223.5.5.5
+    - 119.29.29.29
+
   # fallback 判断规则
   fallback-filter:
     geoip: true
@@ -848,12 +858,8 @@ dns:
     - https://8.8.8.8/dns-query
 
   # 附加可选字段
-  respect-rules: false
   use-hosts: false
   use-system-hosts: false
-  direct-nameserver: 
-    - 223.5.5.5
-    - 119.29.29.29
 
 proxies:
 `;
