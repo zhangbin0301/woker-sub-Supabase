@@ -792,33 +792,31 @@ async function getExcludeKeywords(env) {
 
 // 1. Clash Config Template
 // 请使用此代码块替换您文件中的 getClashHeader 函数
+// --- 请用此代码块完整替换您 Worker 中的 getClashHeader 函数 ---
 function getClashHeader() {
+    // 恢复到最稳定且经过速度优化的 DNS 配置
 return `port: 7890
-sock-port: 7891
+socks-port: 7891
 allow-lan: true
 mode: rule
 log-level: info
-external-controller: 127.0.0.1:9090
-secret: ''
+# 标准 Clash 优化的 DNS 配置
 dns:
   enable: true
-  listen: 0.0.0.0:53
+  ipv6: false
   enhanced-mode: fake-ip
   fake-ip-range: 198.18.0.1/16
   default-nameserver:
-    - 119.29.29.29
     - 223.5.5.5
   nameserver:
-    - https://dns.alidns.com/dns-query
-    - https://doh.pub/dns-query
+    - https://223.5.5.5/dns-query # 国内DNS，走 DIRECT
+    - https://1.12.12.12/dns-query
   fallback:
-    - https://1.0.0.1/dns-query
-    - https://8.8.4.4/dns-query
+    - https://1.1.1.1/dns-query # 国外DNS，走 PROXY
+    - https://8.8.8.8/dns-query
   fallback-filter:
     geoip: true
     geoip-code: CN
-    ipcidr:
-      - 240.0.0.0/4
 proxies:
 `;
 }
@@ -1257,25 +1255,59 @@ ${autoProxies.map(n => `      - "${n.replace(/"/g, '\\"')}"`).join('\n')}
 `;
 
     // 5. 拼接 Rules (分流规则) - 保留不变
-    yaml += `
+// --- 请用此代码块替换您 generateClashYaml 函数中原有的 Rules (分流规则) 部分 ---
+
+// --- 请用此代码块替换您 generateClashYaml 函数中原有的 Rules (分流规则) 部分 ---
+
+// --- 请用此代码块替换您 generateClashYaml 函数中原有的 Rules (分流规则) 部分 ---
+
+yaml += `
 rules:
-  - IP-CIDR,192.168.0.0/16,🎯 全球直连,no-resolve
-  - IP-CIDR,10.0.0.0/8,🎯 全球直连,no-resolve
-  - IP-CIDR,172.16.0.0/12,🎯 全球直连,no-resolve
-  - GEOIP,CN,🇨🇳 国内网站
-  - GEOSITE,CN,🇨🇳 国内网站
-  - DOMAIN-SUFFIX,cn,🇨🇳 国内网站
-  - DOMAIN-SUFFIX,googlevideo.com,🇨🇳 国内网站
-  - DOMAIN-SUFFIX,apple-cloudkit.com,🇨🇳 国内网站
-  - DOMAIN-SUFFIX,microsoft.com,🇨🇳 国内网站
+  # 广告和恶意域名（放在前面拦截）
   - DOMAIN-KEYWORD,ad,🛑 广告拦截
   - DOMAIN-KEYWORD,googlead,🛑 广告拦截
   - DOMAIN-KEYWORD,analytics,🛑 广告拦截
+
+  # 常见流媒体和社交媒体（强制走国外代理）
+  - DOMAIN-SUFFIX,youtube.com,🌍 国外网站
+  - DOMAIN-SUFFIX,youtu.be,🌍 国外网站
+  - DOMAIN-SUFFIX,googlevideo.com,🌍 国外网站 # Youtube 视频流
+  - DOMAIN-SUFFIX,v2ex.com,🌍 国外网站
+  - DOMAIN-SUFFIX,telegram.org,🌍 国外网站
+  - DOMAIN-SUFFIX,t.co,🌍 国外网站
+  - DOMAIN-SUFFIX,media-amazon.com,🌍 国外网站 # Amazon/Prime Video
+  - DOMAIN-SUFFIX,netflix.com,🌍 国外网站
+  - DOMAIN-SUFFIX,spotify.com,🌍 国外网站
+  - DOMAIN-SUFFIX,cdninstagram.com,🌍 国外网站 # Instagram CDN
+  
+  # 局域网/保留地址直连（防止内网流量走代理）
+  - IP-CIDR,192.168.0.0/16,🎯 全球直连,no-resolve
+  - IP-CIDR,10.0.0.0/8,🎯 全球直连,no-resolve
+  - IP-CIDR,172.16.0.0/12,🎯 全球直连,no-resolve
+
+  # 大陆 GEOIP 和 GEOSITE 直连
+  - GEOIP,CN,🇨🇳 国内网站
+  - GEOSITE,CN,🇨🇳 国内网站
+
+  # 其他常见国外网站走国外代理
+  - DOMAIN-SUFFIX,google.com,🌍 国外网站
+  - DOMAIN-SUFFIX,facebook.com,🌍 国外网站
+  - DOMAIN-SUFFIX,twitter.com,🌍 国外网站
+  - DOMAIN-SUFFIX,apple-cloudkit.com,🌍 国外网站
+  - DOMAIN-SUFFIX,microsoft.com,🌍 国外网站
+  
+  # 其他大陆网站走直连
+  - DOMAIN-SUFFIX,cn,🇨🇳 国内网站
+
+  # 默认匹配
   - MATCH,🆑 其他
 `;
 
     return yaml;
-}
+} 
+// --- 确保 } 闭合了 generateClashYaml 函数 ---
+// --- 确保 } 闭合了 generateClashYaml 函数 ---
+// --- 确保 } 闭合了 generateClashYaml 函数 ---
 
 // Worker Main Entry
 export default {
