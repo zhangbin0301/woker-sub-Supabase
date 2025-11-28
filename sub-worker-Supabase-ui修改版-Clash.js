@@ -789,30 +789,38 @@ async function getExcludeKeywords(env) {
  * Clash Meta (Mihome) Parser & Generator
  * =========================================================================================
  */
-
+// 恢复到最稳定且经过速度优化的 DNS 配置
 function getClashHeader() {
-    // 恢复到最稳定且经过速度优化的 DNS 配置
 return `port: 7890
 socks-port: 7891
 allow-lan: true
 mode: rule
 log-level: info
+
 # 标准 Clash 优化的 DNS 配置
 dns:
   enable: true
   ipv6: false
   enhanced-mode: fake-ip
   fake-ip-range: 198.18.0.1/16
+  
+  # bootstrap DNS（IP 形式）
   default-nameserver:
     - 223.5.5.5
     - 119.29.29.29
+  
+  # 国内 DoH，含 ECS 加速
   nameserver:
-    - https://223.5.5.5/dns-query # 国内DNS，走 DIRECT
-    - https://1.12.12.12/dns-query
+    - https://223.5.5.5/dns-query#ecs=1 # 国内DNS，走 DIRECT
+    - https://1.12.12.12/dns-query#ecs=1
+  
+  # 国外 DoH，用于解锁/防污染
   fallback:
-    - https://1.1.1.1/dns-query # 国外DNS，走 PROXY
+    - https://1.1.1.1/dns-query
     - https://8.8.8.8/dns-query
     - https://9.9.9.9/dns-query
+  
+  # fallback 判断规则
   fallback-filter:
     geoip: true
     geoip-code: CN
@@ -822,6 +830,7 @@ dns:
       - +.youtube.com
       - +.twitter.com
       - +.tiktok.com
+
   # 避免 fake-ip 干扰局域网设备
   fake-ip-filter:
     - "*.lan"
@@ -832,16 +841,19 @@ dns:
     - "ntp.*"
     - "router.*"
     - "miwifi.com"   
-  # 防止代理服务器域名被国内 DNS 污染
+
+  # 节点域名强制走国外 DNS ,防止域名被国内 DNS 污染
   proxy-server-nameserver:
     - https://1.1.1.1/dns-query
     - https://8.8.8.8/dns-query
 
-  # ⭐ 你提到的附加字段（推荐放在这里）
+  # 附加可选字段
   respect-rules: false
   use-hosts: false
   use-system-hosts: false
-  direct-nameserver: []
+  direct-nameserver: 
+    - 223.5.5.5
+    - 119.29.29.29
 
 proxies:
 `;
@@ -1281,12 +1293,7 @@ ${autoProxies.map(n => `      - "${n.replace(/"/g, '\\"')}"`).join('\n')}
       - 🎯 全球直连
 `;
 
-    // 5. 拼接 Rules (分流规则) - 保留不变
-// --- 请用此代码块替换您 generateClashYaml 函数中原有的 Rules (分流规则) 部分 ---
-
-// --- 请用此代码块替换您 generateClashYaml 函数中原有的 Rules (分流规则) 部分 ---
-
-// --- 请用此代码块替换您 generateClashYaml 函数中原有的 Rules (分流规则) 部分 ---
+// 5. 拼接 Rules (分流规则) - 保留不变
 
 yaml += `
 rules:
@@ -1329,8 +1336,6 @@ rules:
 
     return yaml;
 } 
-// --- 确保 } 闭合了 generateClashYaml 函数 ---
-// --- 确保 } 闭合了 generateClashYaml 函数 ---
 // --- 确保 } 闭合了 generateClashYaml 函数 ---
 
 // Worker Main Entry
