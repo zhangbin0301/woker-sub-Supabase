@@ -790,9 +790,6 @@ async function getExcludeKeywords(env) {
  * =========================================================================================
  */
 
-// 1. Clash Config Template
-// 请使用此代码块替换您文件中的 getClashHeader 函数
-// --- 请用此代码块完整替换您 Worker 中的 getClashHeader 函数 ---
 function getClashHeader() {
     // 恢复到最稳定且经过速度优化的 DNS 配置
 return `port: 7890
@@ -808,18 +805,48 @@ dns:
   fake-ip-range: 198.18.0.1/16
   default-nameserver:
     - 223.5.5.5
+    - 119.29.29.29
   nameserver:
     - https://223.5.5.5/dns-query # 国内DNS，走 DIRECT
     - https://1.12.12.12/dns-query
   fallback:
     - https://1.1.1.1/dns-query # 国外DNS，走 PROXY
     - https://8.8.8.8/dns-query
+    - https://9.9.9.9/dns-query
   fallback-filter:
     geoip: true
     geoip-code: CN
+    domain:
+      - +.google.com
+      - +.facebook.com
+      - +.youtube.com
+      - +.twitter.com
+      - +.tiktok.com
+  # 避免 fake-ip 干扰局域网设备
+  fake-ip-filter:
+    - "*.lan"
+    - "*.local"
+    - "*.home.arpa"
+    - localhost
+    - "time.*"
+    - "ntp.*"
+    - "router.*"
+    - "miwifi.com"   
+  # 防止代理服务器域名被国内 DNS 污染
+  proxy-server-nameserver:
+    - https://1.1.1.1/dns-query
+    - https://8.8.8.8/dns-query
+
+  # ⭐ 你提到的附加字段（推荐放在这里）
+  respect-rules: false
+  use-hosts: false
+  use-system-hosts: false
+  direct-nameserver: []
+
 proxies:
 `;
 }
+
 
 // 2. Vmess Parser
 function parseVmess(url) {
@@ -1263,43 +1290,40 @@ ${autoProxies.map(n => `      - "${n.replace(/"/g, '\\"')}"`).join('\n')}
 
 yaml += `
 rules:
-  # 广告和恶意域名（放在前面拦截）
+  # 广告拦截
   - DOMAIN-KEYWORD,ad,🛑 广告拦截
   - DOMAIN-KEYWORD,googlead,🛑 广告拦截
   - DOMAIN-KEYWORD,analytics,🛑 广告拦截
 
-  # 常见流媒体和社交媒体（强制走国外代理）
+  # 流媒体/国外服务
   - DOMAIN-SUFFIX,youtube.com,🌍 国外网站
   - DOMAIN-SUFFIX,youtu.be,🌍 国外网站
-  - DOMAIN-SUFFIX,googlevideo.com,🌍 国外网站 # Youtube 视频流
+  - DOMAIN-SUFFIX,googlevideo.com,🌍 国外网站
   - DOMAIN-SUFFIX,v2ex.com,🌍 国外网站
   - DOMAIN-SUFFIX,telegram.org,🌍 国外网站
   - DOMAIN-SUFFIX,t.co,🌍 国外网站
-  - DOMAIN-SUFFIX,media-amazon.com,🌍 国外网站 # Amazon/Prime Video
+  - DOMAIN-SUFFIX,media-amazon.com,🌍 国外网站
   - DOMAIN-SUFFIX,netflix.com,🌍 国外网站
   - DOMAIN-SUFFIX,spotify.com,🌍 国外网站
-  - DOMAIN-SUFFIX,cdninstagram.com,🌍 国外网站 # Instagram CDN
-  
-  # 局域网/保留地址直连（防止内网流量走代理）
+  - DOMAIN-SUFFIX,cdninstagram.com,🌍 国外网站
+
+  # 局域网
   - IP-CIDR,192.168.0.0/16,🎯 全球直连,no-resolve
   - IP-CIDR,10.0.0.0/8,🎯 全球直连,no-resolve
   - IP-CIDR,172.16.0.0/12,🎯 全球直连,no-resolve
 
-  # 大陆 GEOIP 和 GEOSITE 直连
-  - GEOIP,CN,🇨🇳 国内网站
+  # 国内
   - GEOSITE,CN,🇨🇳 国内网站
+  - GEOIP,CN,🇨🇳 国内网站
 
-  # 其他常见国外网站走国外代理
+  # 国外补充
   - DOMAIN-SUFFIX,google.com,🌍 国外网站
   - DOMAIN-SUFFIX,facebook.com,🌍 国外网站
   - DOMAIN-SUFFIX,twitter.com,🌍 国外网站
   - DOMAIN-SUFFIX,apple-cloudkit.com,🌍 国外网站
   - DOMAIN-SUFFIX,microsoft.com,🌍 国外网站
-  
-  # 其他大陆网站走直连
-  - DOMAIN-SUFFIX,cn,🇨🇳 国内网站
 
-  # 默认匹配
+  # 默认
   - MATCH,🆑 其他
 `;
 
