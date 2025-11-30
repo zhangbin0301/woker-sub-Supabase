@@ -884,28 +884,65 @@ async function initDatabase(env) {
     }
 }
 
-// 获取所有节点 - 按ID排序确保新添加的在最后
+// 获取所有节点 - 优化：按名称首字母排序 (忽略大小写)
 async function getAllUrls(env) {
     const supabase = new SupabaseClient(env.SUPABASE_URL, env.SUPABASE_ANON_KEY);
     try {
-        const results = await supabase.select('urls', 'url_name, url', {}, 'id.asc');
+        // 修改 1: 数据库层面尝试按 url_name 排序
+        const results = await supabase.select('urls', 'url_name, url', {}, 'url_name.asc');
+        
+        // --- 新增辅助函数：判断字符是否为中文 ---
+        const isChinese = (char) => {
+            if (!char || typeof char !== 'string') return false;
+            // 获取第一个非空格字符的 Unicode 编码
+            const trimmedChar = char.trimStart().charAt(0);
+            if (!trimmedChar) return false;
+            const code = trimmedChar.charCodeAt(0);
+            // CJK Unified Ideographs (常用的汉字范围)
+            return code >= 0x4E00 && code <= 0x9FFF;
+        };
+        // ----------------------------------------
+
         return results
             .filter(row => row.url && typeof row.url === 'string' && !shouldExcludeUrl(row.url))
-            .map(row => ({ url: row.url, urlName: row.url_name }));
+            .map(row => ({ url: row.url, urlName: row.url_name }))
+            // 修改 2: JS层面再次排序，实现英文在前，中文在后
+            .sort((a, b) => {
+                const nameA = a.urlName;
+                const nameB = b.urlName;
+                const aIsChinese = isChinese(nameA);
+                const bIsChinese = isChinese(nameB);
+
+                // 规则 1: 英文/数字/符号 (非中文) 优先
+                if (!aIsChinese && bIsChinese) {
+                    return -1; // a (非中文) 在 b (中文) 之前
+                }
+                // 规则 2: 中文靠后
+                if (aIsChinese && !bIsChinese) {
+                    return 1; // a (中文) 在 b (非中文) 之后
+                }
+
+                // 规则 3: 同为中文或同为非中文时，使用 localeCompare 进行精细排序
+                // zh-CN 确保中文按拼音排序，英文按字母排序，且数字按数值排序
+                return nameA.localeCompare(nameB, 'zh-CN', { numeric: true, sensitivity: 'base' });
+            });
     } catch (error) {
         console.error('Error getting all URLs:', error);
         return [];
     }
 }
 
-// 获取所有自定义节点 - 按ID排序确保新添加的在最后
+// 获取所有自定义节点 - 优化：按URL首字母排序
 async function getSub2Urls(env) {
     const supabase = new SupabaseClient(env.SUPABASE_URL, env.SUPABASE_ANON_KEY);
     try {
-        const results = await supabase.select('sub2_urls', 'url, id', {}, 'id.asc');
+        // 修改: 按 url 排序
+        const results = await supabase.select('sub2_urls', 'url, id', {}, 'url.asc');
         return results
             .filter(row => row.url && typeof row.url === 'string' && !shouldExcludeUrl(row.url))
-            .map(row => ({ url: row.url, id: row.id }));
+            .map(row => ({ url: row.url, id: row.id }))
+            // JS 排序增强
+            .sort((a, b) => a.url.localeCompare(b.url, 'zh-CN', { numeric: true, sensitivity: 'base' }));
     } catch (error) {
         console.error("Error getting SUB2 URLs:", error);
         return [];
