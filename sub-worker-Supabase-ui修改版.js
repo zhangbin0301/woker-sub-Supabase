@@ -5,7 +5,7 @@ const CONFIG = {
     APITOKEN: 'lgbt',  // 管理节点的API路径密钥
     UP: 'ea4909ef-7ca6-4b46-bf2e-6c07896ef338',           // 节点上传密钥
     TOKEN: 'lgbt', // 订阅地址密钥
-    USER: 'admin',  // 登录用户名
+    USER: '123123',  // 登录用户名
     DEFAULT_DOMAIN: '', // 默认即可，无需设置
     EXPIRATION_TIME: 86400000, // 自动上传节点链接有效期(秒), 过期未更新则移除
     MAX_LOGIN_ATTEMPTS: 3, // 最大登录尝试次数 (前端限制)
