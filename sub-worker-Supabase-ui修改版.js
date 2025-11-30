@@ -515,9 +515,9 @@ const html = `<!DOCTYPE html>
                  
                 // 显示带占位符的地址,不暴露真实TOKEN和UP值
                 document.getElementById('uploadUrl').textContent = 
-                    \`\${domain}/upload-你设置的UP值\`;
+                    \`\${domain}/upload-${CONFIG.UP}\`;
                 document.getElementById('downloadUrl').textContent = 
-                    \`\${domain}/token=你设置的TOKEN值?cf_ip=ip.sb&cf_port=443\`;
+                    \`\${domain}/token=${CONFIG.TOKEN}?cf_ip=ip.sb&cf_port=443\`;
                 
                 await Promise.all([loadSub2(), loadUrls(), loadKeywords()]);
               }else{
