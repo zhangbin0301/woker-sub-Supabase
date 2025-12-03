@@ -130,6 +130,99 @@ $$ LANGUAGE plpgsql;
 
 ---
 
+SQL编辑代码删除有一些bug 修改代码如下，待测试
+
+在 Supabase 项目的 SQL Editor 中执行以下 SQL：
+
+```sql
+-- ==========================================
+-- 第一部分：基础表结构
+-- ==========================================
+
+-- 1. 创建 URLs 表
+CREATE TABLE IF NOT EXISTS urls (
+    id BIGSERIAL PRIMARY KEY,
+    url_name TEXT NOT NULL,
+    url TEXT NOT NULL,
+    last_update BIGINT NOT NULL,
+    expiration_ttl INTEGER NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- 2. 创建索引
+CREATE INDEX IF NOT EXISTS idx_urls_url_name ON urls(url_name);
+CREATE INDEX IF NOT EXISTS idx_urls_last_update ON urls(last_update);
+
+-- 3. 创建 sub2_urls 表
+CREATE TABLE IF NOT EXISTS sub2_urls (
+    id BIGSERIAL PRIMARY KEY,
+    url TEXT NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- 4. 创建 exclude_keywords 表
+-- 【注意】这里是你漏掉括号的地方，我已经补全了
+CREATE TABLE IF NOT EXISTS exclude_keywords (
+    id BIGSERIAL PRIMARY KEY,
+    keyword TEXT NOT NULL UNIQUE,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- ==========================================
+-- 第二部分：业务函数 (已包含修复逻辑)
+-- ==========================================
+
+-- 1. 删除过期 URLs (保留原样)
+CREATE OR REPLACE FUNCTION delete_expired_urls(expired_time BIGINT)
+RETURNS void AS $$
+BEGIN
+    DELETE FROM urls WHERE last_update < expired_time;
+END;
+$$ LANGUAGE plpgsql;
+
+-- 2. [修复版] 删除所有 URLs (返回 JSON)
+CREATE OR REPLACE FUNCTION delete_all_urls()
+RETURNS json
+SECURITY DEFINER
+AS $$
+BEGIN
+    TRUNCATE TABLE urls;
+    RETURN '{"status": "ok"}'::json;
+END;
+$$ LANGUAGE plpgsql;
+
+-- 3. [修复版] 删除所有自定义节点 (返回 JSON)
+CREATE OR REPLACE FUNCTION delete_all_sub2_urls()
+RETURNS json
+SECURITY DEFINER
+AS $$
+BEGIN
+    TRUNCATE TABLE sub2_urls;
+    RETURN '{"status": "ok"}'::json;
+END;
+$$ LANGUAGE plpgsql;
+
+-- 4. [修复版] 删除所有关键词 (返回 JSON)
+CREATE OR REPLACE FUNCTION delete_all_keywords()
+RETURNS json
+SECURITY DEFINER
+AS $$
+BEGIN
+    TRUNCATE TABLE exclude_keywords;
+    RETURN '{"status": "ok"}'::json;
+END;
+$$ LANGUAGE plpgsql;
+
+```
+
+---
+
+
+
+
+
+
+
 ## 部署步骤
 
 ### 步骤 1: 获取 Supabase 配置信息
