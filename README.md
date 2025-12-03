@@ -161,7 +161,6 @@ CREATE TABLE IF NOT EXISTS sub2_urls (
 );
 
 -- 4. 创建 exclude_keywords 表
--- 【注意】这里是你漏掉括号的地方，我已经补全了
 CREATE TABLE IF NOT EXISTS exclude_keywords (
     id BIGSERIAL PRIMARY KEY,
     keyword TEXT NOT NULL UNIQUE,
